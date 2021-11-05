@@ -1,0 +1,59 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>Some famous Computer Scientists</h1>
+  
+
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div><br/>
+    {% endfor %}
+  </div>
+
+<p><a href="another">Go to the other page</a></p>
+
+<form method="POST" action="/add">
+<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
+</form>
+
+<form method="POST" action="/test">
+<p>test: <input type="text" name="test"> <input type="submit" value="Add"></p>
+</form>
+
+<form method="POST" action="/test">
+<p>test: <input type="range" id="vol" min="0" max="100" name="test"> <input type="submit"></p>
+</form>
+
+<form method="POST" action="/test">
+<label for="borough">Choose a borough:</label>
+<select id="borough" name="borough">
+  <option value="Manhattan">Manhattan</option>
+  <option value="Brooklyn">Brooklyn</option>
+  <option value="Queens">Queens</option>
+  <option value="Bronx">Bronx</option>
+  <option value="Staten Island">Staten Island</option>
+</select>
+<input type="submit">
+</form>
+
+<form method="POST" action="/test2">
+  <input type="checkbox" id="food1" name="food1" value="Hamburgers">
+  <label for="food1"> Hamburgers</label><br>
+  <input type="checkbox" id="food2" name="food2" value="Donuts">
+  <label for="food2"> Donuts</label><br>
+  <input type="checkbox" id="food3" name="food3" value="Coffee/Tea">
+  <label for="food3"> Coffee/Tea</label><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+
+
+</html>
