@@ -36,7 +36,9 @@ app = Flask(__name__, template_folder=tmpl_dir)
 #
 #     DATABASEURI = "postgresql://biliris:foobar@104.196.152.219/proj1part2"
 #
+
 DATABASEURI = "postgresql://sls2305:6264@35.196.73.133/proj1part2"
+#DATABASEURI = "postgresql://fa2602:7831@35.196.73.133/proj1part2"
 
 
 #
@@ -48,11 +50,11 @@ engine = create_engine(DATABASEURI)
 # Example of running queries in your database
 # Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
 #
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text
-);""")
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace'), ('skyler');""")
+#engine.execute("""CREATE TABLE IF NOT EXISTS test (
+#  id serial,
+#  name text
+#);""")
+#engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace'), ('skyler');""")
 
 
 @app.before_request
@@ -109,19 +111,18 @@ def index():
   """
 
   # DEBUG: this is debugging code to see what request looks like
-  print(request.args)
+  #print(request.args)
 
 
   #
   # example of a database query
   #
-  #borough = request.form['borough']
   
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()
+  #cursor = g.conn.execute("SELECT name FROM test")
+  #names = []
+  #for result in cursor:
+  #  names.append(result['name'])  # can also be accessed using result[0]
+  #cursor.close()
   
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -150,14 +151,14 @@ def index():
   #     {% endfor %}
   #
   
-  context = dict(data = names)
+  #context = dict(data = names)
  
 
   #
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html", **context)
+  return render_template("index.html")
 
 #
 # This is an example of a different path.  You can see it at:
@@ -172,13 +173,7 @@ def another():
   return render_template("another.html")
 
 
-# Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  print(name)
-  #g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  return redirect('/')
+
 
 #test function - find name, date, and violation given borough from dropdown menu
 @app.route('/test', methods=['POST'])
@@ -195,20 +190,22 @@ def test():
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
 
-  #table = pd.DataFrame(names).to_html()
-  #context = dict(data = table)
   context = dict(data = names)
   
   return render_template("index.html", **context)
 
-#test2 - find 
+#test2 - find restaurants and address given cuisine type
 @app.route('/test2', methods=['POST'])
 def test2():
-  length = 3
+  length = 7
   food = [0] * length
   food[0] = (request.form.get('food1'))
   food[1] = (request.form.get('food2'))
   food[2] = (request.form.get('food3'))
+  food[3] = (request.form.get('food4'))
+  food[4] = (request.form.get('food5'))
+  food[5] = (request.form.get('food6'))
+  food[6] = (request.form.get('food7'))
   print(food)
   #g.conn.execute('SELECT name FROM restaurant')
   query = 'SELECT R.name, A.building, A.street, A.zip FROM restaurant R, address A WHERE R.camis = A.camis'
@@ -231,8 +228,69 @@ def test2():
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
 
-  #table = pd.DataFrame(names).to_html()
-  #context = dict(data = table)
+  context = dict(data = names)
+  
+  return render_template("index.html", **context)
+
+#test3 - find restaurants above or below a given latitude
+@app.route('/test3', methods=['POST'])
+def test3():
+  latitude = request.form['latitude']
+  north_south = request.form['north_south']
+  print(latitude)
+  print(north_south)
+  latitude = float(latitude) / 298.93100777 + 40.54298569 #rescale the latitude
+  print(latitude)
+  #g.conn.execute('SELECT name FROM restaurant')
+  query = 'SELECT R.name, A.latitude FROM restaurant R, address A WHERE R.camis = A.camis AND A.latitude '
+  if north_south == 'North':
+    query = query + '>='
+  elif north_south == 'South':
+    query = query + '<='
+  query = query + '\'' + str(latitude) + '\''
+  print(query)
+  cursor = g.conn.execute(query)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data = names)
+  
+  return render_template("index.html", **context)
+  
+  #test4 - print name, date, grade given grade input
+@app.route('/test4', methods=['POST'])
+def test4():
+  length = 3
+  grade = [0] * length
+  grade[0] = (request.form.get('grade1'))
+  grade[1] = (request.form.get('grade2'))
+  grade[2] = (request.form.get('grade3'))
+
+  print(grade)
+  #g.conn.execute('SELECT name FROM restaurant')
+  query = 'SELECT R.name, I.date, G.grade FROM restaurant R, inspection I, grade G WHERE R.camis = I.camis AND I.iid = G.iid'
+
+  string_list = ' AND G.grade IN ('
+
+  for i in range(length): #go through all foods
+    if (grade[i] != None): #only add if selected
+      string_list = string_list + '\'' + grade[i] + '\'' + ',' #append to list
+
+  string_list = string_list[:-1] #remove last comma
+  string_list = string_list + ')'
+  print(string_list)
+
+  if (string_list != ' AND G.grade IN )'): #check if any values added to string list
+    query = query + string_list #run default query if nothing selected
+  
+  cursor = g.conn.execute(query)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
   context = dict(data = names)
   
   return render_template("index.html", **context)

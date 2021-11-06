@@ -8,7 +8,7 @@
 
 
 <body>
-  <h1>Some famous Computer Scientists</h1>
+  <h1>NYC Restaurant and Health Inspection Database</h1>
   
 
   <div>
@@ -19,20 +19,17 @@
 
 <p><a href="another">Go to the other page</a></p>
 
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
+<form method="POST" action="/test3">
+<label for="north_south">Select North of, or South of:</label><br/>
+<select id="north_south" name="north_south">
+  <option value="North">North</option>
+  <option value="South">South</option>
+</select>
+<p>Latitude: <input type="range" id="vol" min="0" max="100" name="latitude"> <input type="submit"></p>
 </form>
 
 <form method="POST" action="/test">
-<p>test: <input type="text" name="test"> <input type="submit" value="Add"></p>
-</form>
-
-<form method="POST" action="/test">
-<p>test: <input type="range" id="vol" min="0" max="100" name="test"> <input type="submit"></p>
-</form>
-
-<form method="POST" action="/test">
-<label for="borough">Choose a borough:</label>
+<label for="borough">List of all restaurants in a borough + date of inspection + inspection comments:</label><br/>
 <select id="borough" name="borough">
   <option value="Manhattan">Manhattan</option>
   <option value="Brooklyn">Brooklyn</option>
@@ -44,12 +41,32 @@
 </form>
 
 <form method="POST" action="/test2">
+<label for="checkbox">List name and address of all restaurants with the selected cuisine:</label><br/>
   <input type="checkbox" id="food1" name="food1" value="Hamburgers">
   <label for="food1"> Hamburgers</label><br>
   <input type="checkbox" id="food2" name="food2" value="Donuts">
   <label for="food2"> Donuts</label><br>
   <input type="checkbox" id="food3" name="food3" value="Coffee/Tea">
-  <label for="food3"> Coffee/Tea</label><br><br>
+  <label for="food3"> Coffee/Tea</label><br>
+  <input type="checkbox" id="food4" name="food4" value="American">
+  <label for="food4"> American</label><br>
+  <input type="checkbox" id="food5" name="food5" value="Asian/Asian Fusion">
+  <label for="food5"> Asian/Asian Fusion</label><br>
+  <input type="checkbox" id="food6" name="food6" value="Seafood">
+  <label for="food6"> Seafood</label><br>
+  <input type="checkbox" id="food7" name="food7" value="Middle Eastern">
+  <label for="food7"> Middle Eastern</label><br>
+  <input type="submit" value="Submit">
+</form>
+
+<form method="POST" action="/test4">
+<label for="checkbox">List name, date, and inspection grade of all restaurants with selected grade:</label><br/>
+  <input type="checkbox" id="grade1" name="grade1" value="A">
+  <label for="grade1"> A</label><br>
+  <input type="checkbox" id="grade2" name="grade2" value="B">
+  <label for="grade2"> B</label><br>
+  <input type="checkbox" id="grade3" name="grade3" value="C">
+  <label for="grade3"> C</label><br>
   <input type="submit" value="Submit">
 </form>
 
