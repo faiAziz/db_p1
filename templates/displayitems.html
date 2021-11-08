@@ -1,0 +1,25 @@
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <p><a href="/">Go to Search Page</a></p>
+  <body>
+  <h1>Results</h1>
+    {{ data.data|safe }}
+</body>
+  <ul class="pagination">
+  {%if data.page == 1%}
+  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+  {%else%}
+      <li class="page-item"><a class="page-link" href="/displayitems/{{data.page-1}}">Previous</a></li>
+   {%endif%}
+    {%if data.page+1 <= data.limit%}
+    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+    {%else%}
+  <li class="page-item"><a class="page-link" href="/displayitems/{{data.page+1}}">Next</a></li>
+    {%endif%}
+</ul>
+</html>

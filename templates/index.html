@@ -1,1 +1,89 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
 
+
+<body>
+  <h1>NYC Restaurant and Health Inspection Database</h1>
+
+<p>List all the restaurants and corresponding cuisines within the chosen distance: </p>
+  <button onclick="getLocation()">Allow Location</button>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+    var x = {};
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  }
+}
+function showPosition(position) {
+    $.post("/location", {
+        js_data: {'lat': position.coords.latitude, "long": position.coords.longitude}
+    });
+}
+</script>
+
+   <form method="POST" action="/radius">
+     <p>Distance: <input type="range" id="distance" min="0" max="100" name="distance"> <input type="submit"></p>
+</form>
+
+<form method="POST" action="/latitude">
+<label for="north_south">Select North of, or South of:</label><br/>
+<select id="north_south" name="north_south">
+  <option value="North">North</option>
+  <option value="South">South</option>
+</select>
+<p>Latitude: <input type="range" id="vol" min="0" max="100" name="latitude"> <input type="submit"></p>
+</form>
+
+<form method="POST" action="/borough">
+<label for="borough">List of all restaurants in a borough + date of inspection + inspection comments:</label><br/>
+<select id="borough" name="borough">
+  <option value="Manhattan">Manhattan</option>
+  <option value="Brooklyn">Brooklyn</option>
+  <option value="Queens">Queens</option>
+  <option value="Bronx">Bronx</option>
+  <option value="Staten Island">Staten Island</option>
+</select>
+<input type="submit">
+</form>
+
+<form method="POST" action="/cuisine">
+<label for="checkbox">List name and address of all restaurants with the selected cuisine:</label><br/>
+  <input type="checkbox" id="food1" name="food1" value="Hamburgers">
+  <label for="food1"> Hamburgers</label><br>
+  <input type="checkbox" id="food2" name="food2" value="Donuts">
+  <label for="food2"> Donuts</label><br>
+  <input type="checkbox" id="food3" name="food3" value="Coffee/Tea">
+  <label for="food3"> Coffee/Tea</label><br>
+  <input type="checkbox" id="food4" name="food4" value="American">
+  <label for="food4"> American</label><br>
+  <input type="checkbox" id="food5" name="food5" value="Asian/Asian Fusion">
+  <label for="food5"> Asian/Asian Fusion</label><br>
+  <input type="checkbox" id="food6" name="food6" value="Seafood">
+  <label for="food6"> Seafood</label><br>
+  <input type="checkbox" id="food7" name="food7" value="Middle Eastern">
+  <label for="food7"> Middle Eastern</label><br>
+  <input type="submit" value="Submit">
+</form>
+
+<form method="POST" action="/grade">
+<label for="checkbox">List name, date, and inspection grade of all restaurants with selected grade:</label><br/>
+  <input type="checkbox" id="grade1" name="grade1" value="A">
+  <label for="grade1"> A</label><br>
+  <input type="checkbox" id="grade2" name="grade2" value="B">
+  <label for="grade2"> B</label><br>
+  <input type="checkbox" id="grade3" name="grade3" value="C">
+  <label for="grade3"> C</label><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+
+
+</html>
