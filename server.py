@@ -3,13 +3,9 @@
 """
 Columbia's COMS W4111.003 Introduction to Databases
 Example Webserver
-
 To run locally:
-
     python server.py
-
 Go to http://localhost:8111 in your browser.
-
 A debugger such as "pdb" may be helpful for debugging.
 Read about it online.
 """
@@ -24,8 +20,8 @@ import pandas as pd
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
-#DATABASEURI = "postgresql://sls2305:6264@35.196.73.133/proj1part2"
-DATABASEURI = "postgresql://fa2602:7831@35.196.73.133/proj1part2"
+DATABASEURI = "postgresql://sls2305:6264@35.196.73.133/proj1part2"
+#DATABASEURI = "postgresql://fa2602:7831@35.196.73.133/proj1part2"
 lat, long = 0, 0 
 
 engine = create_engine(DATABASEURI)
@@ -36,7 +32,6 @@ def before_request():
   This function is run at the beginning of every web request 
   (every time you enter an address in the web browser).
   We use it to setup a database connection that can be used throughout the request.
-
   The variable g is globally accessible.
   """
   try:
@@ -61,11 +56,9 @@ def teardown_request(exception):
 def index():
   """
   request is a special object that Flask provides to access web request information:
-
   request.method:   "GET" or "POST"
   request.form:     if the browser submitted a form, this contains the data in the form
   request.args:     dictionary of URL arguments, e.g., {a:1, b:2} for http://localhost?a=1&b=2
-
   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
   """
   return render_template("index.html")
@@ -141,7 +134,7 @@ def cuisine(page=1):
 def latitude(page=1):
   latitude = request.form['latitude']
   north_south = request.form['north_south']
-  latitude = float(latitude) / 298.93100777 + 40.54298569 #rescale the latitude
+  latitude = float(latitude) / 298.93100777 + 40.54298569 #rescale the latitude to size of NYC
   query = 'SELECT R.name, A.latitude FROM restaurant R, address A WHERE R.camis = A.camis AND A.latitude '
   if north_south == 'North':
     query = query + '>='
@@ -180,10 +173,10 @@ def location():
 def radius(page=1):
   global lat
   global long
-  radius = int(request.form.get('distance', 1)) * 1000
+  radius = int(request.form.get('distance', 1)) * 200 #distance is 0-100 slider, convert to 0-20,000 (in units of meters)
   if (lat != 0 and long != 0):
     query = 'select R.name, R.cuisine from restaurant R, address A where R.camis = A.camis AND ' + str(radius) + '> ( sqrt(((' + str(lat) + ' - A.latitude)* (' + str(
-        lat) + ' - A.latitude)) + ((' + str(long) + ' - A.longitude)*(' + str(long) + ' - A.longitude)))* 111139)'
+        lat) + ' - A.latitude)) + ((' + str(long) + ' - A.longitude)*(' + str(long) + ' - A.longitude)))* 111139)' #111,139 is conversion from meters to degrees latitude/longitude
     cursor = g.conn.execute(query)
     output = []
     for result in cursor:
@@ -261,13 +254,9 @@ if __name__ == "__main__":
     """
     This function handles command line parameters.
     Run the server using:
-
         python server.py
-
     Show the help text using:
-
         python server.py --help
-
     """
 
     HOST, PORT = host, port
@@ -276,3 +265,4 @@ if __name__ == "__main__":
 
 
   run()
+
