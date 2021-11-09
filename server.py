@@ -65,10 +65,10 @@ def index():
 
 #borough - find name, date, and violation given borough from dropdown menu
 @app.route('/borough', methods=['POST'])
-def borough(page=1):
+def borough():
   borough = request.form['borough']
   query = 'SELECT R.name, I.date, V.description FROM restaurant R, address A, violation V, inspection I WHERE R.camis = I.camis AND R.camis = A.camis AND V.iid = I.iid AND A.boro = '
-  query = query + '\'' + borough + '\''+ ' LIMIT 500'
+  query = query + '\'' + borough + '\''
   cursor = g.conn.execute(query)
   output = []
   for result in cursor:
@@ -76,19 +76,13 @@ def borough(page=1):
   cursor.close()
   df = pd.DataFrame(output, columns= ['Restaurant Name', 'Inspection Date', 'Violation Description'])
 
-  items_per_page = 20
-  limit = math.ceil(len(df) / items_per_page)
-  start_pos = 0
-  if int(page) != 1:
-    start_pos = items_per_page * (int(page) - 1)
-
-  data = dict(page=int(page), data=df[start_pos: start_pos + items_per_page].to_html(), limit=limit)
+  data = dict(data=df.to_html())
 
   return render_template('displayitems.html', data=data)
 
 #cuisine - find restaurants and address given cuisine type
 @app.route('/cuisine', methods=['POST'])
-def cuisine(page=1):
+def cuisine():
   length = 7
   food = [0] * length
   food[0] = (request.form.get('food1'))
@@ -119,19 +113,13 @@ def cuisine(page=1):
   cursor.close()
   df = pd.DataFrame(output, columns=['Restaurant Name', 'Building', 'Street', 'Zip Code'])
 
-  items_per_page = 20
-  limit = math.ceil(len(df) / items_per_page)
-  start_pos = 0
-  if int(page) != 1:
-    start_pos = items_per_page * (int(page) - 1)
-
-  data = dict(page=int(page), data=df[start_pos: start_pos + items_per_page].to_html(), limit=limit)
+  data = dict(data=df.to_html())
 
   return render_template('displayitems.html', data=data)
 
 #latitude - find restaurants above or below a given latitude
 @app.route('/latitude', methods=['POST'])
-def latitude(page=1):
+def latitude():
   latitude = request.form['latitude']
   north_south = request.form['north_south']
   latitude = float(latitude) / 298.93100777 + 40.54298569 #rescale the latitude to size of NYC
@@ -148,13 +136,7 @@ def latitude(page=1):
   cursor.close()
   df = pd.DataFrame(output, columns=['Restaurant Name', 'Latitude'])
 
-  items_per_page = 20
-  limit = math.ceil(len(df) / items_per_page)
-  start_pos = 0
-  if int(page) != 1:
-    start_pos = items_per_page * (int(page) - 1)
-
-  data = dict(page=int(page), data=df[start_pos: start_pos + items_per_page].to_html(), limit=limit)
+  data = dict(data=df.to_html())
 
   return render_template('displayitems.html', data=data)
 
@@ -170,7 +152,7 @@ def location():
 
 #radius - find restaurants within a given radius
 @app.route('/radius', methods=['POST'])
-def radius(page=1):
+def radius():
   global lat
   global long
   radius = int(request.form.get('distance', 1)) * 200 #distance is 0-100 slider, convert to 0-20,000 (in units of meters)
@@ -183,22 +165,15 @@ def radius(page=1):
       output.append(result)  # can also be accessed using result[0]
     cursor.close()
     df = pd.DataFrame(output, columns=['Restaurant Name', 'Cuisine'])
-
-    items_per_page = 20
-    limit = math.ceil(len(df) / items_per_page)
-    start_pos = 0
-    if int(page) != 1:
-      start_pos = items_per_page * (int(page) - 1)
-
-    data = dict(page=int(page), data=df[start_pos: start_pos + items_per_page].to_html(), limit=limit)
+    data = dict(data=df.to_html())
   else:
-    data = dict(page=1, data='<p>You must allow location first!</p>', limit=1)
+    data = dict(data='<p>You must allow location first!</p>')
 
   return render_template('displayitems.html', data=data)
   
 #grade - print name, date, grade given grade input
 @app.route('/grade', methods=['POST'])
-def grade(page=1):
+def grade():
   length = 3
   grade = [0] * length
   grade[0] = (request.form.get('grade1'))
@@ -226,13 +201,7 @@ def grade(page=1):
   cursor.close()
   df = pd.DataFrame(output, columns=['Restaurant Name', 'Inspection Date', 'Grade'])
 
-  items_per_page = 20
-  limit = math.ceil(len(df) / items_per_page)
-  start_pos = 0
-  if int(page) != 1:
-    start_pos = items_per_page * (int(page) - 1)
-
-  data = dict(page=int(page), data=df[start_pos: start_pos + items_per_page].to_html(), limit=limit)
+  data = dict(data=df.to_html())
 
   return render_template('displayitems.html', data=data)
 
